@@ -9,7 +9,8 @@ router.post('/create', product.create_product);
 router.post('/add-new-variant', product.add_new_variant);
 router.post('/add-to-cart', product.add_to_cart);
 router.get('/products-list', product.get_all_products);
-// router.put('/update', product.update_product);
+router.post('/cart-list', product.cart_list);
+router.put('/update', product.update_product);
 router.delete('/delete', product.delete_product);
 
 module.exports = router;

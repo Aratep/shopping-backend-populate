@@ -32,11 +32,17 @@ router.add_to_cart = (req, res, next) => {
     const user_id = req.body.user_id;
 
     Users.findOne({_id: user_id})
+        .populate('products')
         .then(user => {
 
             if (user) {
                 let productIds = user.products;
-                productIds.push(prod_id);
+                // for(let i = 0; i < productIds.length; i++) {
+                //     if(productIds[i] === prod_id) {
+                //         return
+                //     }
+                    productIds.push(prod_id);
+                // }
 
                 console.log(user)
                 Users.updateOne(
@@ -45,7 +51,8 @@ router.add_to_cart = (req, res, next) => {
                     {runValidators: true, context: 'query'}
                 )
                     .then(() => {
-                        res.status(200).json({updated: {user}});
+                        const products = user.products;
+                        res.status(200).json({products});
                     })
                     .catch(err => {
                         for (let i in err.errors) {
@@ -59,13 +66,23 @@ router.add_to_cart = (req, res, next) => {
         .catch(err => console.log(err));
 };
 
+router.cart_list = (req, res, next) => {
+    console.log(req.body);
+
+
+}
+
 router.get_all_products = (req, res) => {
 
-    Product.find({}).populate('variants').exec((err, prod) => {
+    Product.find({}).populate('variants').exec((err, products) => {
         if (err) throw err;
+        let count;
+        for(let i = 0; i <= products.length; i++) {
+            count = i;
+        }
 
-        console.log(prod)
-        res.status(200).json({prod})
+        console.log(products)
+        res.status(200).json({products, count})
     })
 };
 
@@ -114,43 +131,43 @@ router.add_new_variant = (req, res, next) => {
 
 }
 
-// router.update_product = (req, res, next) => {
-//     const name = req.body.values.name;
-//     const imagePath = req.body.values.path;
-//     const description = req.body.values.description;
-//     const price = req.body.values.price;
-//     const available_quantity = req.body.values.quantity;
-//     const status = req.body.values.status;
-//     const id = req.body.id;
-//
-//     // console.log(req.body);
-//
-//     Product.findOne({_id: id})
-//         .then(product => {
-//             if (product) {
-//                 Product.updateOne(
-//                     {_id: id},
-//                     {$set: {name, imagePath, description, price, available_quantity, status}},
-//                     {runValidators: true, context: 'query'}
-//                 )
-//                     .then(() => {
-//                             res.status(200).json({
-//                                     updated: {name, imagePath, description, price, available_quantity, status}
-//                                 }
-//                             );
-//                         }
-//                     )
-//                     .catch(err => {
-//                         for (let i in err.errors) {
-//                             return res.status(400).send({
-//                                 message: err.errors[i].message
-//                             });
-//                         }
-//                     })
-//             }
-//         })
-//         .catch(err => console.log(err));
-// }
+router.update_product = (req, res, next) => {
+    const name = req.body.values.name;
+    const imagePath = req.body.values.path;
+    const description = req.body.values.description;
+    const price = req.body.values.price;
+    const available_quantity = req.body.values.quantity;
+    const status = req.body.values.status;
+    const id = req.body.id;
+
+    // console.log(req.body);
+
+    Product.findOne({_id: id})
+        .then(product => {
+            if (product) {
+                Product.updateOne(
+                    {_id: id},
+                    {$set: {name, imagePath, description, price, available_quantity, status}},
+                    {runValidators: true, context: 'query'}
+                )
+                    .then(() => {
+                            res.status(200).json({
+                                    updated: {name, imagePath, description, price, available_quantity, status}
+                                }
+                            );
+                        }
+                    )
+                    .catch(err => {
+                        for (let i in err.errors) {
+                            return res.status(400).send({
+                                message: err.errors[i].message
+                            });
+                        }
+                    })
+            }
+        })
+        .catch(err => console.log(err));
+}
 
 router.delete_product = (req, res) => {
     const id = req.body.id;

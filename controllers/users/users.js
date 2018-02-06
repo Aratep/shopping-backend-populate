@@ -58,18 +58,46 @@ router.sign_in = (req, res) => {
                 req.session.userId = user._id;
                 localStorage.setItem('userId', user._id);
 
-                const token = jwt.sign({
-                    email: user.email,
-                    username: user.username,
-                    _id: user._id,
-                    isLoggedin: true
-                }, 'secret_key');
+                const token = jwt.sign({user}, 'secret_key');
                 // res.status(200).json({token: token})
-                res.status(200).json({user})
+                res.status(200).json({token})
             }
         })
         .catch(err => console.log(err))
 };
+
+router.remove_user_product = (req, res, next) => {
+    console.log(req.body);
+    const user_id = req.body.user_id;
+    const prod_id = req.body.prod_id;
+
+    User.findOne({_id: user_id})
+        .then(user => {
+            console.log(user.products)
+            if (user) {
+                User.updateOne(
+                    { _id: user_id },
+                    { $unset: { products: prod_id } } //$set: {products: productIds}
+                )
+                    .then(() => {
+                            res.status(200).json({
+                                    token: jwt.sign(
+                                        {email: email, username: username, _id: user._id}, 'secret_key')
+                                }
+                            );
+                        }
+                    )
+                    .catch(err => {
+                        for (let i in err.errors) {
+                            return res.status(400).send({
+                                message: err.errors[i].message
+                            });
+                        }
+                    })
+            }
+        })
+        .catch(err => console.log(err));
+}
 
 router.edit_user = (req, res) => {
     const username = req.body.values.usernameupdate;

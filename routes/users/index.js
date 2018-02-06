@@ -11,6 +11,7 @@ router.put('/reset_password', users.reset_password);
 // router.use(verifyToken);
 
 router.post('/sign_in', users.sign_in);
+router.delete('/remove-user-product', users.remove_user_product);
 router.put('/edit_user', users.edit_user);
 router.delete('/delete_single_user', users.delete_single_user);
 router.get('/all-users', users.get_all_users);
