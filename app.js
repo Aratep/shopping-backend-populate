@@ -13,6 +13,8 @@ const admin = require('./routes/admin/index');
 const users = require('./routes/users/index');
 const cart = require('./routes/cart/index');
 const accessControl = require('./middlewares/accessControl');
+//middleware to permit admin user
+const permit = require('./middlewares/permission');
 
 const app = express();
 
@@ -41,6 +43,9 @@ app.use(session({
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//admin permissions
+// app.use("/api/private", permit("admin"));
+// app.use(["/api/foo", "/api/bar"], permit("owner", "employee"));
 
 app.use(accessControl.access_controls);
 

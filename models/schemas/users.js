@@ -19,7 +19,8 @@ const UserSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    products: [{ type: Schema.Types.ObjectId, ref: 'product' }]
+    isAdmin: {type: Boolean, default: false},
+    products: [{ type: Schema.Types.ObjectId, ref: 'product'}]
     // role: {
     //     type:String,
     //     default: 'user',

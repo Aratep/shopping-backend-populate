@@ -36,18 +36,12 @@ router.add_to_cart = (req, res, next) => {
         .then(user => {
 
             if (user) {
-                let productIds = user.products;
-                // for(let i = 0; i < productIds.length; i++) {
-                //     if(productIds[i] === prod_id) {
-                //         return
-                //     }
-                    productIds.push(prod_id);
-                // }
+                let products = user.products;
+                products.push(prod_id);
 
-                console.log(user)
                 Users.updateOne(
                     {_id: user_id},
-                    {$set: {products: productIds}},
+                    {$set: {products: products}},
                     {runValidators: true, context: 'query'}
                 )
                     .then(() => {
@@ -67,8 +61,18 @@ router.add_to_cart = (req, res, next) => {
 };
 
 router.cart_list = (req, res, next) => {
-    console.log(req.body);
+    // console.log(req.body);
+    const user_id = req.body.user_id;
 
+    Users.findOne({_id: user_id})
+        .populate('products')
+        .then(user => {
+            if (user) {
+                const userProducts = user.products
+                res.status(200).json({userProducts})
+            }
+        })
+        .catch(err => console.log(err));
 
 }
 
@@ -77,11 +81,10 @@ router.get_all_products = (req, res) => {
     Product.find({}).populate('variants').exec((err, products) => {
         if (err) throw err;
         let count;
-        for(let i = 0; i <= products.length; i++) {
+        for (let i = 0; i <= products.length; i++) {
             count = i;
         }
-
-        console.log(products)
+        // console.log(products)
         res.status(200).json({products, count})
     })
 };
@@ -93,7 +96,7 @@ router.add_new_variant = (req, res, next) => {
     const variant_price = req.body.values.variantPrice;
     const variant_status = req.body.values.variantStatus;
     const variant_image_path = req.body.values.variantImagePath;
-    const id = req.body.values.id;
+    const id = req.body.id;
 
     const variant = {variant_name, variant_price, variant_status, variant_image_path};
     const newVariant = new Variant(variant);
@@ -176,7 +179,9 @@ router.delete_product = (req, res) => {
         .then(product => {
             if (product) {
                 Variant.remove({_id: {$in: product.variants}})
-                    .then(() => {console.log('variants are deleted')});
+                    .then(() => {
+                        console.log('variants are deleted')
+                    });
                 Product.remove({_id: id})
                     .then(() => {
                         res.status(200).json({message: `${product.name} is deleted`});

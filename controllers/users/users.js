@@ -40,17 +40,16 @@ router.sign_in = (req, res) => {
     const username = req.body.username;
     const email = req.body.username;
     const password = req.body.password;
-    console.log(req.body);
 
     User.findOne({$or: [{'email': email}, {'username': username}]})
         .populate('products')
         .then(user => {
             if (!user) {
-                res.status(401).json({message: 'Authentication failed. User not found.'})
+                res.status(401).json({message: 'Wrong username or password'})
 
             } else if (user) {
                 if (user && !bcrypt.compareSync(password, user.password)) {
-                    res.status(401).json({message: 'Authentication failed. Wrong password.'})
+                    res.status(401).json({message: 'Wrong username or password'})
                 }
             }
             if (user && bcrypt.compareSync(password, user.password)) {
@@ -67,24 +66,19 @@ router.sign_in = (req, res) => {
 };
 
 router.remove_user_product = (req, res, next) => {
-    console.log(req.body);
     const user_id = req.body.user_id;
     const prod_id = req.body.prod_id;
 
     User.findOne({_id: user_id})
         .then(user => {
-            console.log(user.products)
+            const products = user.products.filter(prod => prod != prod_id);
             if (user) {
                 User.updateOne(
                     { _id: user_id },
-                    { $unset: { products: prod_id } } //$set: {products: productIds}
+                    {$set: {products}},
                 )
                     .then(() => {
-                            res.status(200).json({
-                                    token: jwt.sign(
-                                        {email: email, username: username, _id: user._id}, 'secret_key')
-                                }
-                            );
+                            res.status(200).json({user});
                         }
                     )
                     .catch(err => {
