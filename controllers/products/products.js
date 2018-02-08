@@ -3,11 +3,11 @@ const router = express.Router();
 
 const Product = require('../../models/schemas/products');
 const Variant = require('../../models/schemas/variants');
-const Cart = require('../../models/schemas/cart');
 const Users = require('../../models/schemas/users');
 
 router.create_product = (req, res, next) => {
     console.log(req.body);
+
     const name = req.body.values.name;
     const imagePath = req.body.values.path;
     const description = req.body.values.description;
@@ -77,7 +77,6 @@ router.cart_list = (req, res, next) => {
 }
 
 router.get_all_products = (req, res) => {
-
     Product.find({}).populate('variants').exec((err, products) => {
         if (err) throw err;
         let count;

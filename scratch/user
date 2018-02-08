@@ -1,0 +1,8 @@
+{ created: 2018-02-08T09:20:02.501Z,
+  products: [],
+  _id: 5a7c164271232f3936232461,
+  username: 'admin2',
+  email: 'admin2@mail.ru',
+  password: '$2a$10$CMdzPdPu2sSb3AYhAjkDWuzinWmyiH4oxs9N4IqPQnHPJ/zJplsCa',
+  role: 'admin',
+  __v: 0 }

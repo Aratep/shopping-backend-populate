@@ -5,7 +5,6 @@ const router = express.Router();
 const users = require('../../controllers/users/users');
 const verifyToken = require('../../middlewares/verifyToken');
 
-router.get('/token', users.generate_token);
 router.post('/register', users.register);
 router.put('/reset_password', users.reset_password);
 // router.use(verifyToken);

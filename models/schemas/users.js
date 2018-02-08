@@ -1,5 +1,6 @@
 const db = require('../db');
 const uniqueValidator = require('mongoose-unique-validator');
+const mongooseRole = require('mongoose-role');
 
 const Schema = db.Schema;
 
@@ -19,16 +20,20 @@ const UserSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    isAdmin: {type: Boolean, default: false},
-    products: [{ type: Schema.Types.ObjectId, ref: 'product'}]
-    // role: {
-    //     type:String,
-    //     default: 'user',
-    //     required: false
-    // }
+    products: [{ type: Schema.Types.ObjectId, ref: 'product'}],
+    role: {type:String, default: 'user', required: false}
 });
 
 UserSchema.plugin(uniqueValidator, {message: '{VALUE} is already taken.'});
+UserSchema.plugin(mongooseRole, {
+    roles: ['public', 'user', 'admin'],
+    accessLevels: {
+        'public': ['public', 'user', 'admin'],
+        'anon': ['public'],
+        'user': ['user', 'admin'],
+        'admin': ['admin']
+    }
+});
 
 // UserSchema.plugin(require('mongoose-role'), {
 //     roles: ['user', 'admin'],
