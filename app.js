@@ -6,7 +6,9 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const cors = require('cors');
+var MongoStore = require('connect-mongo')(session);
 
+const db = require('./models/db');
 const index = require('./routes/index');
 const products = require('./routes/products/index');
 const admin = require('./routes/admin/index');
@@ -26,19 +28,23 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
-
+//
+// app.set('trust proxy', 1);
 app.use(session({
     secret: "mySecretWord",
     key: "SESSIONID",
     resave: true,
     saveUninitialized: true,
     cookie: {
+        secure: false,
         path: "/",
-        maxAge: null,
-        httpOnly: true
+        // maxAge: null,
+        // httpOnly: true,
     }
 }));
-app.use(cors());
+
+// app.use(cors());
+app.use(cors({credentials: true, origin: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(accessControl.access_controls);

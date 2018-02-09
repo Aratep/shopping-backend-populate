@@ -5,6 +5,7 @@ router.access_controls = (req, res, next) => {
     // Website you wish to allow to connect
     const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
     const origin = req.headers.origin;
+
     if(allowedOrigins.indexOf(origin) > -1){
         res.setHeader('Access-Control-Allow-Origin', origin);
     }
@@ -20,13 +21,6 @@ router.access_controls = (req, res, next) => {
     // to the API (e.g. in case you use sessions)
     res.setHeader('Access-Control-Allow-Credentials', true);
 
-    // Access-Control-Allow-Origin: *
-    // Pass to next layer of middleware
-    // if ('OPTIONS' === req.method) {
-    //     res.send(200);
-    // } else {
-    //     next();
-    // }
     next();
 };
 

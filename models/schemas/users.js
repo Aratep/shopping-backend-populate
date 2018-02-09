@@ -35,13 +35,6 @@ UserSchema.plugin(mongooseRole, {
     }
 });
 
-// UserSchema.plugin(require('mongoose-role'), {
-//     roles: ['user', 'admin'],
-//     accessLevels: {
-//         'admin': ['admin']
-//     }
-// });
-
 const users = db.model('user', UserSchema);
 
 module.exports = users;

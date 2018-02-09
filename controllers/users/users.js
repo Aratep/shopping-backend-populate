@@ -55,6 +55,7 @@ router.sign_in = (req, res) => {
             if (user && bcrypt.compareSync(password, user.password)) {
                 // console.log(user)
                 req.session.user = user;
+                req.session.save();
                 // console.log(req.session.user)
                 localStorage.setItem('userId', user._id);
 
@@ -162,7 +163,7 @@ router.reset_password = (req, res) => {
 };
 
 router.get_all_users = (req, res) => {
-    console.log(req.session.user)
+    console.log(req.session)
     User.find({}).exec((err, users) => {
         if (err) throw err;
         User.count().then(count => {
