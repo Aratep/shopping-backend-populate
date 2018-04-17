@@ -25,5 +25,8 @@
     "nodemailer": "^4.4.2",
     "nodemon": "^1.14.11",
     "serve-favicon": "~2.4.5"
+  },
+  "engines": {
+    "node": "9.7.0"
   }
 }
